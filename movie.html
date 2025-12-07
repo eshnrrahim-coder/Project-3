@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Details</title>
+  <style>
+    :root {
+      --bg: #111;
+      --bg-alt: #181818;
+      --header: #000;
+      --card: #1f1f1f;
+      --border: #2a2a2a;
+      --text: #f5f5f5;
+      --muted: #6576e2;
+      --accent: #187bf5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--header);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      width: 120px;
+      height: 42px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .search-bar {
+      flex: 1;
+      margin: 0 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 9px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #050505;
+      color: var(--text);
+      outline: none;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-buttons a {
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #252525;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .nav-buttons a:hover {
+      background: #333;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+    }
+
+    /*Main Movie Information*/
+
+    .content-wrapper {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .movie-info {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .movie-poster {
+      width: 260px;
+      height: 360px;
+      background: #333;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .movie-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .movie-text {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .movie-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .movie-meta {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .movie-description {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .rating-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0 4px;
+      flex-wrap: wrap;
+    }
+
+    .score-label {
+      font-weight: bold;
+    }
+
+    .score-bar {
+      position: relative;
+      width: 220px;
+      height: 10px;
+      background: #2e2e2e;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .score-dot {
+      position: absolute;
+      top: -4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid var(--accent);
+      transform: translateX(-50%);
+      left: 0%;
+      transition: left 0.3s ease;
+    }
+
+    .avg-score-text {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /*Top Cast*/
+
+    .cast-title {
+      margin-top: 18px;
+      font-weight: bold;
+    }
+
+    .cast-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .cast-card {
+      min-width: 110px;
+      max-width: 110px;
+      background: #272727;
+      border-radius: 6px;
+      padding-bottom: 8px;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .cast-photo {
+      width: 100%;
+      height: 120px;
+      background: #3a3a3a;
+      border-radius: 6px 6px 0 0;
+      overflow: hidden;
+    }
+
+    .cast-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cast-name {
+      font-weight: bold;
+      padding: 4px 6px 0;
+    }
+
+    .cast-role {
+      color: var(--muted);
+      padding: 0 6px;
+      font-size: 12px;
+    }
+
+    /*Reviews Area*/
+
+    .reviews-section {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .reviews-section h3 {
+      margin: 0 0 10px;
+    }
+
+    .review {
+      background: #242424;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #333;
+      font-size: 14px;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .review-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .review-form {
+      margin-top: 14px;
+      background: #242424;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #333;
+    }
+
+    .review-form label {
+      display: block;
+      font-size: 13px;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    .review-form input,
+    .review-form select,
+    .review-form textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #131313;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      resize: vertical;
+      outline: none;
+    }
+
+    .review-form textarea {
+      min-height: 80px;
+    }
+
+    .review-form button {
+      margin-top: 10px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .review-form button:hover {
+      background: #e0b315;
+    }
+
+    /*Related Movies*/
+
+    .related-section {
+      margin-top: 24px;
+      background: var(--card);
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .related-title {
+      margin: 0 0 10px 4px;
+    }
+
+    .related-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .related-movie {
+      min-width: 160px;
+      max-width: 160px;
+      background: #262626;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid #333;
+      text-decoration: none;
+      color: inherit;
+      font-size: 13px;
+    }
+
+    .related-poster {
+      height: 200px;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #777;
+    }
+
+    .related-info {
+      padding: 6px;
+    }
+
+    .related-arrow {
+      display: none; /*Used for Scrolling or Swiping*/
+    }
+
+    /*Footer*/
+
+    footer {
+      padding: 18px 24px;
+      background: var(--header);
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .social div {
+      width: 32px;
+      height: 32px;
+      background: #555;
+      border-radius: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="home.html" class="logo" style="text-decoration:none;">C N</a>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search movies..." />
+    </div>
+
+    <nav class="nav-buttons">
+      <a href="home.html">Home</a>
+      <a href="#">Top Rated</a>
+      <a href="#">New</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="content-wrapper">
+      <div class="movie-info">
+        <div class="movie-poster" id="movie-poster">?</div>
+
+        <div class="movie-text">
+          <div class="movie-title" id="movie-title">Loading…</div>
+          <div class="movie-meta" id="movie-meta"></div>
+          <div class="movie-description" id="movie-description"></div>
+
+          <div class="rating-line">
+            <div class="score-label">User score</div>
+            <div class="score-bar">
+              <div class="score-fill" id="score-fill"></div>
+              <div class="score-dot" id="score-dot"></div>
+            </div>
+            <div class="avg-score-text" id="avg-score-text">No ratings yet</div>
+          </div>
+
+          <div class="cast-title">Top Cast</div>
+          <div class="cast-row" id="cast-row"></div>
+        </div>
+      </div>
+
+      <section class="reviews-section">
+        <h3>User Reviews</h3>
+        <div id="reviews-list"></div>
+
+        <div class="review-form">
+          <h4>Add your review</h4>
+
+          <label for="rating-select">Rating (1–5)</label>
+          <select id="rating-select">
+            <option value="5">5 – Excellent</option>
+            <option value="4">4 – Very Good</option>
+            <option value="3">3 – Good</option>
+            <option value="2">2 – Fair</option>
+            <option value="1">1 – Poor</option>
+          </select>
+
+          <label for="name-input">Your name</label>
+          <input id="name-input" placeholder="Optional – leave blank for Anonymous" />
+
+          <label for="review-text">Your review</label>
+          <textarea id="review-text" placeholder="Write your thoughts about this movie..."></textarea>
+
+          <button id="submit-review">Submit Review</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="related-section">
+      <h3 class="related-title">Related Movies</h3>
+      <div class="related-row" id="related-row"></div>
+      <!-- arrows are not needed for basic scrolling; included in base design only -->
+      <div class="related-arrow left"></div>
+      <div class="related-arrow right"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#">Conditions of Use</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Advertising</a>
+      <a href="#">Help</a>
+      <span>|</span>
+      <span>Follow Us</span>
+    </div>
+    <div class="social">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </footer>
+
+  <script>
+    //---Same Movie Displayed on Home Page---//
+    const MOVIES = [
+      {
+        id: "m1",
+        title: "Godzilla x Kong: The New Empire",
+        year: 2024,
+        genre: "Sci-Fi/Action/Adventure",
+        duration: "1h 55min",
+        description:
+          "The film continues the Monsterverse saga as Godzilla and Kong unite to confront a colossal hidden threat while uncovering the Titans’ origins, history, and their deep connection to humanity.",
+        backdropColor: "#3b4371",
+        posterInitials: "GK",
+        posterUrl: "images/godzilla-kong-poster.jpg",
+        cast: [
+          { name: "Rebecca Hall", role: "Ilene Andrews", photo: "images/cast/rebecca-hall.jpg" },
+          { name: "Brian Tyree Henry", role: "Bernie Hayes", photo: "images/cast/brian-tyree.jpg" },
+          { name: "Dan Stevens", role: "Trapper", photo: "images/cast/dan-stevens.jpg" },
+          { name: "Kaylee Hottle", role: "Jia", photo: "images/cast/kaylee-hottle.jpg" },
+        ],
+      },
+      {
+        id: "m2",
+        title: "Venom: The Last Dance",
+        year: 2024,
+        genre: "Sci-Fi/Action/Adventure",
+        duration: "1h 49min",
+        description:
+          "The film follows Eddie and Venom—on the run and hunted by both their worlds—as they face a final, devastating choice that concludes their trilogy.",
+        backdropColor: "#7b1e3b",
+        posterInitials: "VM",
+        posterUrl: "images/venom-last-dance-poster.jpg",
+        cast: [
+          { name: "Tom Hardy", role: "Eddie Brock", photo: "images/cast/tom-hardy.jpg" },
+          { name: "Chiwetel Ejiofor", role: "Actor", photo: "images/cast/chiwetel-ejiofor.jpg" },
+          { name: "Juno Temple", role: "Actor", photo: "images/cast/juno-temple.jpg" },
+        ],
+      },
+      {
+        id: "m3",
+        title: "Blink Twice",
+        year: 2024,
+        genre: "Mystery/Thriller/Horror",
+        duration: "1h 42min",
+        description:
+          "The story follows Frida, who joins billionaire Slater King on a dream island getaway that turns sinister as strange events force her to question her reality and uncover the island’s dark truth to survive.",
+        backdropColor: "#1f2933",
+        posterInitials: "BT",
+        posterUrl: "images/blink-twice-poster.jpg",
+        cast: [
+          { name: "Naomi Ackie", role: "Frida", photo: "images/cast/naomi-ackie.jpg" },
+          { name: "Channing Tatum", role: "Slater", photo: "images/cast/channing-tatum.jpg" },
+          { name: "Christian Slater", role: "Vic", photo: "images/cast/christian-slater.jpg" },
+        ],
+      },
+      {
+        id: "m4",
+        title: "The Fall Guy",
+        year: 2024,
+        genre: "Action/Romance/Comedy/Drama",
+        duration: "2h 6min",
+        description:
+          "The film follows a stuntman recovering from a near-career-ending accident who must find a missing movie star, unravel a conspiracy, and win back his lost love—all while continuing his dangerous day job.",
+        backdropColor: "#2c3e50",
+        posterInitials: "FG",
+        posterUrl: "images/fall-guy-poster.jpg",
+        cast: [
+          { name: "Ryan Gosling", role: "Colt Seavers", photo: "images/cast/ryan-gosling.jpg" },
+          { name: "Emily Blunt", role: "Jody Moreno", photo: "images/cast/emily-blunt.jpg" },
+        ],
+      },
+      {
+        id: "m5",
+        title: "Paper Planes",
+        year: 2019,
+        genre: "Family",
+        duration: "1h 35min",
+        description:
+          "A boy dreams of winning an international paper plane contest.",
+        posterInitials: "PP",
+        posterUrl: "images/paper-planes-poster.jpg",
+        cast: [
+          { name: "Sam Worthington", role: "Jack", photo: "images/cast/sam-worthington.jpg" },
+          { name: "Ed Oxenbould", role: "Dylan", photo: "images/cast/ed-oxenbould.jpg" },
+        ],
+      },
+    ];
+
+    const STORAGE_KEY = "movie_reviews_v1";
+
+    function getMovieFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      return MOVIES.find((m) => m.id === id) || null;
+    }
+
+    function loadReviews() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveReviews(obj) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+    }
+
+    function movieUrl(id) {
+      return `movie.html?id=${encodeURIComponent(id)}`;
+    }
+
+    const movie = getMovieFromUrl();
+    const posterEl = document.getElementById("movie-poster");
+    const titleEl = document.getElementById("movie-title");
+    const metaEl = document.getElementById("movie-meta");
+    const descEl = document.getElementById("movie-description");
+    const castRow = document.getElementById("cast-row");
+    const reviewsList = document.getElementById("reviews-list");
+    const scoreFill = document.getElementById("score-fill");
+    const scoreDot = document.getElementById("score-dot");
+    const avgScoreText = document.getElementById("avg-score-text");
+    const relatedRow = document.getElementById("related-row");
+
+    function initMovieInfo() {
+      if (!movie) {
+        titleEl.textContent = "Movie not found";
+        descEl.textContent = "The movie you selected does not exist.";
+        return;
+      }
+      document.title = movie.title + " – Movie Details";
+
+      if (movie.posterUrl) {
+        posterEl.innerHTML = `<img src="${movie.posterUrl}" alt="${movie.title} poster">`;
+      } else {
+        posterEl.textContent = movie.posterInitials || "?";
+      }
+      titleEl.textContent = movie.title;
+      metaEl.textContent = `${movie.genre} • ${movie.year} • ${movie.duration}`;
+      descEl.textContent = movie.description;
+
+      //---Cast---//
+      castRow.innerHTML = "";
+      (movie.cast || []).forEach((c) => {
+        const div = document.createElement("div");
+        div.className = "cast-card";
+        div.innerHTML = `
+        <div class="cast-photo">
+          ${c.photo ? `<img src="${c.photo}" alt="${c.name}">` : ""}
+          </div>
+          <div class="cast-name">${c.name}</div>
+          <div class="cast-role">${c.role}</div>
+          `;
+
+        castRow.appendChild(div);
+      });
+
+      renderReviewsAndScore();
+      renderRelatedMovies();
+    }
+
+    function renderReviewsAndScore() {
+      const allReviews = loadReviews();
+      const list = allReviews[movie.id] || [];
+
+      //---Review Listings---//
+      if (!list.length) {
+        reviewsList.innerHTML =
+          '<div class="avg-score-text">No reviews yet. Be the first to review!</div>';
+      } else {
+        reviewsList.innerHTML = list
+          .slice()
+          .sort((a, b) => b.created - a.created)
+          .map(
+            (r) => `
+          <article class="review">
+            <div class="review-header">
+              <span>${escapeHtml(r.name || "Anonymous")}</span>
+              <span>${r.rating} ★</span>
+            </div>
+            <div class="review-meta">${new Date(
+              r.created
+            ).toLocaleString()}</div>
+            <div>${escapeHtml(r.text)}</div>
+          </article>
+        `
+          )
+          .join("");
+      }
+
+      //---Average Ratings and the Score Bar---//
+      if (!list.length) {
+        scoreFill.style.width = "0%";
+        scoreDot.style.left = "0%";
+        avgScoreText.textContent = "No ratings yet";
+        return;
+      }
+
+      const avg =
+        list.reduce((s, r) => s + Number(r.rating || 0), 0) / list.length;
+      const pct = (avg / 5) * 100;
+      scoreFill.style.width = pct + "%";
+      scoreDot.style.left = pct + "%";
+      avgScoreText.textContent = `${avg.toFixed(1)} / 5 from ${
+        list.length
+      } review${list.length === 1 ? "" : "s"}`;
+    }
+
+    function renderRelatedMovies() {
+      const related = MOVIES.filter(
+        (m) => m.id !== movie.id && m.genre === movie.genre
+      );
+      const fallback =
+        related.length > 0
+          ? related
+          : MOVIES.filter((m) => m.id !== movie.id).slice(0, 3);
+
+      relatedRow.innerHTML = "";
+      fallback.forEach((m) => {
+        const a = document.createElement("a");
+        a.className = "related-movie";
+        a.href = movieUrl(m.id);
+        a.innerHTML = `
+          <div class="related-poster">${m.posterInitials}</div>
+          <div class="related-info">
+            <strong>${m.title}</strong>
+            <div class="movie-meta">${m.genre} • ${m.year}</div>
+          </div>
+        `;
+        relatedRow.appendChild(a);
+      });
+    }
+
+    //---Add Review---//
+    document
+      .getElementById("submit-review")
+      .addEventListener("click", () => {
+        if (!movie) return;
+        const rating = Number(
+          document.getElementById("rating-select").value
+        );
+        const name = document.getElementById("name-input").value.trim() || "Anonymous";
+        const text = document.getElementById("review-text").value.trim();
+
+        if (!text) {
+          alert("Please write a short review before submitting.");
+          return;
+        }
+
+        const allReviews = loadReviews();
+        allReviews[movie.id] = allReviews[movie.id] || [];
+        allReviews[movie.id].push({
+          rating,
+          name,
+          text,
+          created: Date.now(),
+        });
+        saveReviews(allReviews);
+
+        document.getElementById("review-text").value = "";
+        renderReviewsAndScore();
+      });
+
+    //---HTML Escape Helper---//
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    initMovieInfo();
+  </script>
+</body>
+</html>
