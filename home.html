@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Critics Nest – Home</title>
+  <style>
+    :root {
+      --bg: #111;
+      --bg-alt: #181818;
+      --header: #000;
+      --card: #1f1f1f;
+      --border: #2a2a2a;
+      --text: #f5f5f5;
+      --muted: #6576e2;
+      --accent: #187bf5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+/*Header*/
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--header);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      width: 120px;
+      height: 42px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .search-bar {
+      flex: 1;
+      margin: 0 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 9px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #050505;
+      color: var(--text);
+      outline: none;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-buttons a {
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #252525;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .nav-buttons a:hover {
+      background: #333;
+      color: #fff;
+    }
+
+/*Layout*/
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+/*Slideshow*/
+
+    .slideshow {
+      position: relative;
+      height: 360px;
+      background: #222;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .slide-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.35);
+    }
+
+    .slide-content {
+      position: relative;
+      max-width: 420px;
+      z-index: 1;
+    }
+
+    .slide-title {
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .slide-meta {
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .slide-overview {
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .slide-rating {
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .slide-btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 14px;
+      border-radius: 4px;
+      background: var(--accent);
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      z-index: 2;
+      font-size: 22px;
+      user-select: none;
+    }
+
+    .arrow.left { left: 12px; }
+    .arrow.right { right: 12px; }
+
+/*Movie Rows*/
+
+    .section {
+      margin-bottom: 28px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      margin: 0 0 10px 4px;
+    }
+
+    .movie-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 8px;
+    }
+
+    .movie-row::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .movie-row::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 3px;
+    }
+
+    .movie-card {
+      min-width: 150px;
+      max-width: 150px;
+      background: var(--card);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      flex-shrink: 0;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+    }
+
+    .poster {
+      height: 220px;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+
+    .movie-info {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .movie-info h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .rating-pill {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+/*Footer*/
+
+    footer {
+      margin-top: 30px;
+      padding: 18px 24px;
+      background: var(--header);
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .social div {
+      width: 32px;
+      height: 32px;
+      background: #555;
+      border-radius: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .slideshow {
+        height: auto;
+        min-height: 280px;
+      }
+      .slide-content {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">C N</div>
+
+    <div class="search-bar">
+      <input id="search-input" type="text" placeholder="Search movies..." />
+    </div>
+
+    <nav class="nav-buttons">
+      <a href="#">Home</a>
+      <a href="#">Top Rated</a>
+      <a href="#">New</a>
+    </nav>
+  </header>
+
+  <main class="container">
+<!--Slideshow-->
+    <section class="slideshow">
+      <div class="slide-bg" id="slide-bg"></div>
+
+      <div class="slide-content">
+        <div class="slide-title" id="slide-title"></div>
+        <div class="slide-meta" id="slide-meta"></div>
+        <div class="slide-overview" id="slide-overview"></div>
+        <div class="slide-rating" id="slide-rating"></div>
+        <a id="slide-link" class="slide-btn">View details & reviews</a>
+      </div>
+
+      <div class="arrow left" id="prev-slide">&#9664;</div>
+      <div class="arrow right" id="next-slide">&#9654;</div>
+    </section>
+
+<!--Row Sections-->
+    <section class="section">
+      <h2>Popular Movies</h2>
+      <div class="movie-row" id="row-popular"></div>
+    </section>
+
+    <section class="section">
+      <h2>Trending Now</h2>
+      <div class="movie-row" id="row-trending"></div>
+    </section>
+
+    <section class="section">
+      <h2>Top Rated</h2>
+      <div class="movie-row" id="row-top"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#">Conditions of Use</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Advertising</a>
+      <a href="#">Help</a>
+      <span>|</span>
+      <span>Follow Us</span>
+    </div>
+    <div class="social">
+      <div title="Facebook"></div>
+      <div title="X / Twitter"></div>
+      <div title="Instagram"></div>
+    </div>
+  </footer>
+
+  <script>
+//---Movie Data---//
+    const MOVIES = [
+      {
+        id: "m1",
+        title: "Godzilla x Kong: The New Empire",
+        year: 2024,
+        genre: "Sci-Fi/Action/Adventure",
+        duration: "1h 55min",
+        description:
+          "The film continues the Monsterverse saga as Godzilla and Kong unite to confront a colossal hidden threat while uncovering the Titans’ origins, history, and their deep connection to humanity.",
+        backdropColor: "#3b4371",
+        posterInitials: "GK",
+        posterUrl: "images/godzilla-kong-poster.jpg",
+        category: ["popular", "top", "trending"],
+      },
+      {
+        id: "m2",
+        title: "Venom: The Last Dance",
+        year: 2024,
+        genre: "Sci-Fi/Action/Adventure",
+        duration: "1h 49min",
+        description:
+          "The film follows Eddie and Venom—on the run and hunted by both their worlds—as they face a final, devastating choice that concludes their trilogy.",
+        backdropColor: "#7b1e3b",
+        posterInitials: "VM",
+        posterUrl: "images/venom-last-dance-poster.jpg",
+        category: ["popular"],
+      },
+      {
+        id: "m3",
+        title: "Blink Twice",
+        year: 2024,
+        genre: "Mystery/Thriller/Horror",
+        duration: "1h 42min",
+        description:
+          "The story follows Frida, who joins billionaire Slater King on a dream island getaway that turns sinister as strange events force her to question her reality and uncover the island’s dark truth to survive.",
+        backdropColor: "#1f2933",
+        posterInitials: "BT",
+        posterUrl: "images/blink-twice-poster.jpg",
+        category: ["trending", "popular"],
+      },
+      {
+        id: "m4",
+        title: "The Fall Guy",
+        year: 2024,
+        genre: "Action/Romance/Comedy/Drama",
+        duration: "2h 6min",
+        description:
+          "The film follows a stuntman recovering from a near-career-ending accident who must find a missing movie star, unravel a conspiracy, and win back his lost love—all while continuing his dangerous day job.",
+        backdropColor: "#2c3e50",
+        posterInitials: "FG",
+        posterUrl: "images/fall-guy-poster.jpg",
+        category: ["top"],
+      },
+      {
+        id: "m5",
+        title: "Paper Planes",
+        year: 2019,
+        genre: "Family",
+        duration: "1h 35min",
+        description:
+          "A boy dreams of winning an international paper plane contest.",
+        backdropColor: "#2b5876",
+        posterInitials: "PP",
+        posterUrl: "images/paper-planes-poster.jpg",
+        category: ["trending"],
+      },
+    ];
+
+    function movieUrl(id) {
+      return `movie.html?id=${encodeURIComponent(id)}`;
+    }
+
+    //---Slideshow---//
+    const heroMovies = MOVIES.slice(0, 3);
+    let currentSlide = 0;
+
+    const slideBg = document.getElementById("slide-bg");
+    const slideTitle = document.getElementById("slide-title");
+    const slideMeta = document.getElementById("slide-meta");
+    const slideOverview = document.getElementById("slide-overview");
+    const slideRating = document.getElementById("slide-rating");
+    const slideLink = document.getElementById("slide-link");
+
+    function renderSlide(index) {
+      const m = heroMovies[index];
+      slideBg.style.background =
+        `linear-gradient(135deg, ${m.backdropColor}, #000)`;
+      slideTitle.textContent = m.title;
+      slideMeta.textContent = `${m.genre} • ${m.year} • ${m.duration}`;
+      slideOverview.textContent = m.description;
+      slideRating.textContent = "Click to see user score & reviews";
+      slideLink.href = movieUrl(m.id);
+    }
+
+    document
+      .getElementById("prev-slide")
+      .addEventListener("click", () => {
+        currentSlide = (currentSlide - 1 + heroMovies.length) % heroMovies.length;
+        renderSlide(currentSlide);
+      });
+
+    document
+      .getElementById("next-slide")
+      .addEventListener("click", () => {
+        currentSlide = (currentSlide + 1) % heroMovies.length;
+        renderSlide(currentSlide);
+      });
+
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % heroMovies.length;
+      renderSlide(currentSlide);
+    }, 7000);
+
+    //---Rows---//
+    function createCard(movie) {
+      const a = document.createElement("a");
+      a.className = "movie-card";
+      a.href = movieUrl(movie.id);
+      a.dataset.title = movie.title.toLowerCase();
+
+      a.innerHTML = `
+        <div class="poster">
+          <img src="${movie.posterUrl}" alt="${movie.title} poster">
+        </div>
+        <div class="movie-info">
+          <h3>${movie.title}</h3>
+          <div class="meta">${movie.genre} • ${movie.year}</div>
+          <div class="rating-pill" data-rating-for="${movie.id}">
+            Loading score…
+          </div>
+        </div>
+      `;
+      return a;
+    }
+
+    function fillRow(rowId, filterFn) {
+      const row = document.getElementById(rowId);
+      row.innerHTML = "";
+      MOVIES.filter(filterFn).forEach((m) => row.appendChild(createCard(m)));
+    }
+
+    fillRow("row-popular", (m) => m.category.includes("popular"));
+    fillRow("row-trending", (m) => m.category.includes("trending"));
+    fillRow("row-top", (m) => m.category.includes("top"));
+
+    //---Load The Average Rating into the Local Store---//
+    function loadReviews() {
+      try {
+        return JSON.parse(localStorage.getItem("movie_reviews_v1") || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function updateRowRatings() {
+      const reviews = loadReviews();
+      MOVIES.forEach((m) => {
+        const list = reviews[m.id] || [];
+        const pill = document.querySelector(`[data-rating-for="${m.id}"]`);
+        if (!pill) return;
+        if (!list.length) {
+          pill.textContent = "No score yet";
+        } else {
+          const avg =
+            list.reduce((s, r) => s + Number(r.rating || 0), 0) / list.length;
+          pill.textContent = `${avg.toFixed(1)} / 5 (${list.length})`;
+        }
+      });
+    }
+
+    updateRowRatings();
+
+    //---Search Filter---//
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase();
+      document.querySelectorAll(".movie-card").forEach((card) => {
+        const title = card.dataset.title || "";
+        card.style.display = title.includes(q) ? "" : "none";
+      });
+    });
+
+    //---Initial Hero---//
+    renderSlide(currentSlide);
+  </script>
+</body>
+</html>
